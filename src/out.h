@@ -2,8 +2,11 @@
 #include <fstream>
 #include <ios>
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
+
+#include "color.h"
+
 
 class Buffer {
     std::fstream fs;
@@ -20,7 +23,7 @@ class Buffer {
     Buffer(int height, int width) {
         m_buffer = std::string("P3\n");
         std::ostringstream fmt;
-        fmt << width << ' ' << height << "\n255\n"; 
+        fmt << width << ' ' << height << "\n255\n";
         m_buffer.append(fmt.str());
 
         m_size = m_buffer.size();
@@ -46,12 +49,19 @@ class Buffer {
         }
     }
 
+    friend Buffer& operator<<(Buffer& buffer, Vec3 vec) {
+        buffer << static_cast<int>(255.999 * vec.x()) << ' '
+               << static_cast<int>(255.999 * vec.y()) << ' '
+               << static_cast<int>(255.999 * vec.z()) << '\n';
+        return buffer;
+    }
+
     friend Buffer& operator<<(Buffer& buf, std::string& str) {
         buf._buffer(str.data(), (unsigned int)str.size());
         return buf;
     }
 
-    friend Buffer& operator<<(Buffer& buf, char chr) { 
+    friend Buffer& operator<<(Buffer& buf, char chr) {
         buf._buffer(&chr, sizeof(char));
         return buf;
     }
