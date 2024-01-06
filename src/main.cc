@@ -1,4 +1,5 @@
 #include "out.h"
+#include "color.h"
 
 int main() {
 
@@ -7,18 +8,13 @@ int main() {
 
     Buffer buffer(height, width);
     for (int j = 0; j < height; ++j) {
+        std::clog << "\rScanlines remaining: " << (height - j - 1)  << ' ' << std::flush;
         for (int i = 0; i < width; ++i) {
-            auto r = double(i) / (width - 1);
-            auto g = double(j) / (height - 1);
-            auto b = 0.0;
-
-            int ir = static_cast<int>(255.999 * r);
-            int ig = static_cast<int>(255.999 * g);
-            int ib = static_cast<int>(255.999 * b);
-
-            buffer << ir << ' ' << ig << ' ' << ib << '\n';
+            auto pixel_color = Color((double)i / (width - 1), (double)j / (height - 1), 0);
+            buffer << pixel_color;
         }
     }
 
     buffer.flush();
+    std::clog << "\rDone.                 \n";
 }
